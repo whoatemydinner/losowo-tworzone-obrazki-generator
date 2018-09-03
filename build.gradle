@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+mainClassName = 'application.Main'
+
+sourceSets.main.java.srcDirs = ['src']
+
+jar {  
+  manifest {
+    attributes(
+      'Main-Class': 'application.Main'
+    )
+  }
+  from { (configurations.runtime).collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile 'org.json:json:20180813'  
+}
