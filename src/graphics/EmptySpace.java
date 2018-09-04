@@ -12,6 +12,13 @@ public class EmptySpace {
 	private final int xspan;
 	private final int yspan;
 	
+	public EmptySpace(int x, int y, int xspan, int yspan) {
+		this.x = x;
+		this.y = y;
+		this.xspan = xspan;
+		this.yspan = yspan;
+	}
+	
 	public EmptySpace(JSONObject object) throws IllegalArgumentException {
 		try {
 			this.x = object.getInt("x");
@@ -41,5 +48,9 @@ public class EmptySpace {
 		} else {
 			return new int[] {HEIGHT, this.yspan};
 		}
+	}
+	
+	public boolean checkIfCoordinatesInside(int xcoor, int ycoor) {
+		return xspan - xcoor >= x && yspan - ycoor >= y;
 	}
 }
