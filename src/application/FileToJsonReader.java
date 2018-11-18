@@ -6,9 +6,7 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-public class JsonTemplateFileReader implements JsonFileReader {
-
-	@Override
+public class FileToJsonReader {
 	public JSONObject parseFileToJson(File file) throws IOException {
 		FileReader reader = new FileReader(file);
 		int currentChar;

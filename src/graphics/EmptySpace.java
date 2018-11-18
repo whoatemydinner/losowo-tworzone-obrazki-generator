@@ -1,11 +1,16 @@
 package graphics;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EmptySpace {
 	public static final int WIDTH = 0;
 	public static final int HEIGHT = 1;
+	
+	public static Pattern pattern = Pattern.compile("(?<width>[0-9]*)x(?<height>[0-9]*)");
 	
 	private final int x;
 	private final int y;
@@ -21,10 +26,29 @@ public class EmptySpace {
 	
 	public EmptySpace(JSONObject object) throws IllegalArgumentException {
 		try {
-			this.x = object.getInt("x");
-			this.y = object.getInt("y");
-			this.xspan = object.getInt("xspan");
-			this.yspan = object.getInt("yspan");
+			String xyString = object.getString("topleftcorner");
+			String bottomString = object.getString("bottomrightcorner");
+			Matcher xyMatcher = pattern.matcher(xyString);
+			int x = 0;
+			int y = 0;
+			if (xyMatcher.matches()) {
+				this.x = Integer.parseInt(xyMatcher.group(1));
+				this.y = Integer.parseInt(xyMatcher.group(2));
+			} else {
+				this.x = x;
+				this.y = y;
+			}
+			
+			Matcher bottomMatcher = pattern.matcher(bottomString);
+			if (bottomMatcher.matches()) {
+				int bottomx = Integer.parseInt(bottomMatcher.group(1));
+				int bottomy = Integer.parseInt(bottomMatcher.group(2));
+				this.xspan = bottomx - this.x;
+				this.yspan = bottomy - this.y;
+			} else {
+				this.xspan = 1;
+				this.yspan = 1;
+			}
 		} catch (JSONException e) {
 			throw new IllegalArgumentException("Invalid source JSON for template image.");
 		}
@@ -36,18 +60,6 @@ public class EmptySpace {
 	
 	public int[] getCoordinates() {
 		return new int[] {this.x, this.y};
-	}
-	
-	/**
-	 * 
-	 * @return [0] większy wymiar, [1] rozmiar
-	 */
-	public int[] getLargerDimension() {
-		if (xspan > yspan) {
-			return new int[] {WIDTH, this.xspan};
-		} else {
-			return new int[] {HEIGHT, this.yspan};
-		}
 	}
 	
 	public boolean checkIfCoordinatesInside(int xcoor, int ycoor) {
